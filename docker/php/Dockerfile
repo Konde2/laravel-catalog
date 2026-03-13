@@ -41,14 +41,10 @@ WORKDIR /var/www/html
 COPY --chown=laravel:laravel entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Копирование скрипта инициализации
-COPY --chown=laravel:laravel init.sh /usr/local/bin/init.sh
-RUN chmod +x /usr/local/bin/init.sh
-
 # Установка netcat для проверки портов
 RUN apt-get update && apt-get install -y netcat-openbsd && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 9000
 
+# Запускаем entrypoint который выполнит инициализацию и запустит php-fpm
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-CMD ["php-fpm"]
