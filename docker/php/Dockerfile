@@ -37,11 +37,18 @@ USER laravel
 
 WORKDIR /var/www/html
 
+# Копирование скрипта entrypoint
+COPY --chown=laravel:laravel entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 # Копирование скрипта инициализации
 COPY --chown=laravel:laravel init.sh /usr/local/bin/init.sh
 RUN chmod +x /usr/local/bin/init.sh
 
-# Скрипт запуска
-CMD ["sh", "-c", "/usr/local/bin/init.sh && php-fpm"]
+# Установка netcat для проверки портов
+RUN apt-get update && apt-get install -y netcat-openbsd && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 9000
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["php-fpm"]
