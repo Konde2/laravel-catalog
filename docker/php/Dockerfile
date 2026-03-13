@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     nodejs \
-    npm
+    npm \
+    default-mysql-client
 
 # Очистка кэша
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -36,6 +37,11 @@ USER laravel
 
 WORKDIR /var/www/html
 
-EXPOSE 9000
+# Копирование скрипта инициализации
+COPY --chown=laravel:laravel init.sh /usr/local/bin/init.sh
+RUN chmod +x /usr/local/bin/init.sh
 
-CMD ["php-fpm"]
+# Скрипт запуска
+CMD ["sh", "-c", "/usr/local/bin/init.sh && php-fpm"]
+
+EXPOSE 9000

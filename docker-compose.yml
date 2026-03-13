@@ -15,7 +15,8 @@ services:
     networks:
       - laravel_network
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
   # Nginx веб-сервер
   nginx:
@@ -49,6 +50,12 @@ services:
       - laravel_network
     ports:
       - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "laravel", "-p${DB_PASSWORD:-secret}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   # phpMyAdmin для удобной работы с БД
   phpmyadmin:
