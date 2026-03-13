@@ -157,6 +157,39 @@ tests/Feature/
    - Приложение: http://localhost:8082
    - phpMyAdmin: http://localhost:8081
 
+### Локальный запуск (без Docker)
+
+**Требования:**
+- PHP 8.4+
+- Composer
+- MySQL 8.0+
+
+```bash
+# Установка зависимостей
+composer install
+
+# Копирование .env (если не существует)
+cp .env.example .env
+
+# Генерация ключа приложения
+php artisan key:generate
+
+# Настройка БД в .env
+# DB_CONNECTION=mysql
+# DB_HOST=127.0.0.1
+# DB_DATABASE=catalog
+# DB_USERNAME=laravel
+# DB_PASSWORD=secret
+
+# Создание БД и выполнение миграций
+php artisan migrate:fresh --seed
+
+# Запуск встроенного сервера
+php artisan serve --port=8082
+```
+
+**Доступ к приложению:** http://localhost:8082
+
 ### Остановка контейнеров
 
 ```bash
@@ -194,6 +227,25 @@ docker compose exec app php artisan migrate:fresh --seed
 docker compose build --no-cache
 docker compose up -d
 ```
+
+**Ошибка прав доступа к файлам (Linux/Mac):**
+```bash
+sudo chown -R $USER:$USER storage bootstrap/cache
+sudo chmod -R 775 storage bootstrap/cache
+```
+
+### Проверка работы
+
+После запуска:
+
+1. Откройте http://localhost:8082
+2. Вы увидите:
+   - Список категорий слева (с количеством товаров)
+   - Сетку товаров (3 в ряд)
+   - Возможность сортировки по названию/цене
+   - Пагинацию (6, 12, 18 товаров на странице)
+3. Кликните на категорию для просмотра подкатегорий и товаров
+4. Кликните на товар для просмотра карточки с хлебными крошками
 
 ## 📊 Структура базы данных
 
