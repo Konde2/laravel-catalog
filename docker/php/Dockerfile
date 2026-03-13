@@ -32,7 +32,7 @@ RUN groupadd -g ${PGID} laravel && \
 WORKDIR /var/www/html
 
 # Копирование скрипта entrypoint
-COPY --chown=laravel:laravel entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY --chown=laravel:laravel docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 USER laravel
