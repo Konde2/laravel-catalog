@@ -59,7 +59,7 @@ RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs \
     && chmod -R 775 storage
 
 # Копирование скрипта entrypoint
-COPY --chown=laravel:laravel entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY --chown=laravel:laravel docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 USER laravel
