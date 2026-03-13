@@ -3,8 +3,8 @@ services:
   # PHP-FPM сервис с Laravel
   app:
     build:
-      context: ./docker/php
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: docker/php/Dockerfile
     container_name: laravel_app
     restart: unless-stopped
     working_dir: /var/www/html
