@@ -4,24 +4,22 @@ set -e
 
 echo "🚀 Laravel Catalog Starting..."
 
-# Ждём MySQL
+# Ждём MySQL (до 60 секунд)
 echo "⏳ Waiting for MySQL..."
-until mysql -h"$DB_HOST" -u"$DB_USERNAME" -p"$DB_PASSWORD" -e "SELECT 1" &>/dev/null; do
-    sleep 1
+for i in {1..30}; do
+    if mysql -h"$DB_HOST" -u"$DB_USERNAME" -p"$DB_PASSWORD" -e "SELECT 1" &>/dev/null; then
+        echo "✅ MySQL ready!"
+        break
+    fi
+    echo "   Waiting... ($i/30)"
+    sleep 2
 done
-echo "✅ MySQL ready!"
-
-# Устанавливаем зависимости если нужно
-if [ ! -d "/var/www/html/vendor" ]; then
-    echo "📦 Installing Composer dependencies..."
-    composer install --no-interaction --prefer-dist --optimize-autoloader --no-progress
-    echo "✅ Composer done!"
-fi
 
 # Создаём .env если нет
 if [ ! -f "/var/www/html/.env" ]; then
     echo "📄 Creating .env..."
     cp /var/www/html/.env.example /var/www/html/.env
+    echo "   .env created"
 fi
 
 # Генерируем ключ если нужно
@@ -32,13 +30,17 @@ fi
 
 # Миграции
 echo "🗄️ Running migrations..."
-php artisan migrate --force
+php artisan migrate --force --no-interaction
 
-# Сиды если база пустая
+# Сиды
 echo "🌱 Seeding database..."
-php artisan db:seed --class=CatalogSeeder --force || true
+php artisan db:seed --class=CatalogSeeder --force --no-interaction || true
 
-echo "✅ Ready!"
+# Vite build
+echo "📦 Building assets..."
+npm run build || true
+
+echo "✅ Ready! Opening http://localhost:8082"
 
 # Запускаем PHP-FPM
 exec php-fpm

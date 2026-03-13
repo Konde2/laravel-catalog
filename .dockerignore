@@ -1,0 +1,50 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Dependencies
+vendor/
+node_modules/
+
+# Build artifacts
+public/hot
+public/storage
+public/build
+bootstrap/cache/*
+!bootstrap/cache/.gitignore
+
+# Compiled assets
+*.log
+npm-debug.log
+yarn-error.log
+
+# Testing
+.phpunit.result.cache
+coverage/
+
+# Docker
+docker-compose.override.yml
+Dockerfile
+docker-compose.yml
+.docker/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads (if any)
+storage/app/public/*
+!storage/app/public/.gitignore

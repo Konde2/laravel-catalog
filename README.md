@@ -24,7 +24,7 @@
 
 ### Через Docker Compose (рекомендуется)
 
-**Для Windows:**
+**Все зависимости уже установлены в Docker-образе!**
 
 1. Скачайте проект:
    ```bash
@@ -32,36 +32,31 @@
    cd laravel-catalog
    ```
 
-2. Запустите `start.bat` (двойной клик или из консоли):
+2. Запустите одной командой:
    ```bash
-   start.bat
+   docker compose up -d
    ```
 
 3. Откройте http://localhost:8082
 
-**Для Linux/Mac:**
-
+**Для Windows также можно использовать:**
 ```bash
-git clone https://github.com/Konde2/laravel-catalog.git && \
-cd laravel-catalog && \
-docker compose up -d && \
-docker compose exec app composer install && \
-docker compose exec app php artisan key:generate && \
-docker compose exec app php artisan migrate:fresh --seed
+start.bat
 ```
 
-**Что происходит:**
-1. 📥 Клонирование репозитория
-2. 🐳 Запуск контейнеров (app, nginx, mysql, phpmyadmin)
-3. 📦 Установка Composer зависимостей
-4. 🔐 Генерация ключа приложения
-5. 🗄️ Миграции и заполнение данными
+**Что происходит при первом запуске:**
+1. 🐳 Сборка Docker-образа с предустановленными зависимостями
+2. 📦 Установка Composer и npm пакетов (внутри образа)
+3. 🔐 Генерация ключа приложения
+4. 🗄️ Миграции и заполнение данными
+5. 📦 Сборка frontend-ресурсов (Vite)
 
 **Доступ:**
 - Приложение: http://localhost:8082
 - phpMyAdmin: http://localhost:8081 (логин: `laravel`, пароль: `secret`)
 
-**Первый запуск займёт ~1-2 минуты** (установка зависимостей и миграции).
+**Первый запуск займёт ~2-3 минуты** (сборка образа и установка зависимостей).
+Последующие запуски — несколько секунд.
 
 ---
 
