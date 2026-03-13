@@ -4,6 +4,9 @@ set -e
 
 echo "🚀 Laravel Catalog Starting..."
 
+# Добавляем безопасную директорию для git
+git config --global --add safe.directory /var/www/html
+
 # Ждём MySQL (до 60 секунд)
 echo "⏳ Waiting for MySQL..."
 for i in {1..30}; do
