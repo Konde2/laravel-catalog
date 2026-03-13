@@ -26,8 +26,8 @@
 
 ```bash
 # Клонировать репозиторий
-git clone https://github.com/USERNAME/REPOSITORY.git
-cd REPOSITORY
+git clone https://github.com/Konde2/laravel-catalog.git
+cd laravel-catalog
 
 # Запустить контейнеры
 docker compose up -d
@@ -127,7 +127,7 @@ tests/Feature/
 
 1. **Клонирование репозитория**
    ```bash
-   git clone https://github.com/USERNAME/REPOSITORY.git
+   git clone https://github.com/Konde2/laravel-catalog.git.git
    cd REPOSITORY
    ```
 
