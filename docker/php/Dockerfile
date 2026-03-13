@@ -31,13 +31,29 @@ RUN groupadd -g ${PGID} laravel && \
 
 WORKDIR /var/www/html
 
-# Копирование скрипта entrypoint
-COPY --chown=laravel:laravel docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
+# Копируем файлы зависимостей
+COPY composer.json composer.lock* package.json package-lock.json* ./
+
+# Устанавливаем зависимости ОТ ROOT (чтобы работали с volumes)
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-progress --no-scripts --ignore-platform-reqs \
+    && npm install --legacy-peer-deps \
+    && chown -R laravel:laravel /var/www/html/vendor \
+    && chown -R laravel:laravel /var/www/html/node_modules
+
+# Копируем entrypoint
+COPY docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Копируем весь проект
+COPY --chown=laravel:laravel . .
+
+# Создаём директории storage
+RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs \
+    && chown -R laravel:laravel storage \
+    && chmod -R 775 storage
 
 USER laravel
 
 EXPOSE 9000
 
-# Запускаем entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

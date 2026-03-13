@@ -31,20 +31,6 @@ if ! grep -q "^APP_KEY=.*[a-zA-Z0-9]" /var/www/html/.env 2>/dev/null; then
     php artisan key:generate --force
 fi
 
-# Устанавливаем зависимости если нужно
-if [ ! -d "/var/www/html/vendor" ] || [ ! -f "/var/www/html/vendor/autoload.php" ]; then
-    echo "📦 Installing Composer dependencies..."
-    composer install --no-interaction --prefer-dist --optimize-autoloader --no-progress
-    echo "✅ Composer done!"
-fi
-
-# Устанавливаем Node.js зависимости если нужно
-if [ ! -d "/var/www/html/node_modules" ]; then
-    echo "📦 Installing Node.js dependencies..."
-    npm install --legacy-peer-deps
-    echo "✅ npm done!"
-fi
-
 # Миграции
 echo "🗄️ Running migrations..."
 php artisan migrate --force --no-interaction
