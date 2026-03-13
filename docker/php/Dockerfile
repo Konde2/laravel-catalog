@@ -50,17 +50,17 @@ RUN if [ -f "package-lock.json" ]; then \
     fi \
     && chown -R laravel:laravel /var/www/html/node_modules
 
-# Копирование всего проекта
+# Копирование скрипта entrypoint ДО основного COPY
+COPY --chown=laravel:laravel docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Копирование всего проекта (кроме entrypoint.sh)
 COPY --chown=laravel:laravel . .
 
 # Создание директорий с правильными правами
 RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs \
     && chown -R laravel:laravel storage \
     && chmod -R 775 storage
-
-# Копирование скрипта entrypoint
-COPY --chown=laravel:laravel docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
 
 USER laravel
 
