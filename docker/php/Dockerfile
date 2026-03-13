@@ -31,36 +31,9 @@ RUN groupadd -g ${PGID} laravel && \
 
 WORKDIR /var/www/html
 
-# Копируем файлы зависимостей для установки в образ
-COPY --chown=laravel:laravel composer.json composer.lock* package.json package-lock.json* ./
-
-# Устанавливаем PHP зависимости
-RUN if [ -f "composer.lock" ]; then \
-        composer install --no-interaction --prefer-dist --optimize-autoloader --no-progress --no-scripts; \
-    else \
-        composer update --no-interaction --prefer-dist --optimize-autoloader --no-progress --no-scripts; \
-    fi \
-    && chown -R laravel:laravel /var/www/html/vendor
-
-# Устанавливаем Node.js зависимости
-RUN if [ -f "package-lock.json" ]; then \
-        npm ci --legacy-peer-deps; \
-    else \
-        npm install --legacy-peer-deps; \
-    fi \
-    && chown -R laravel:laravel /var/www/html/node_modules
-
-# Копирование скрипта entrypoint ДО основного COPY
-COPY --chown=laravel:laravel docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
+# Копирование скрипта entrypoint
+COPY --chown=laravel:laravel entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
-
-# Копирование всего проекта (кроме entrypoint.sh)
-COPY --chown=laravel:laravel . .
-
-# Создание директорий с правильными правами
-RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs \
-    && chown -R laravel:laravel storage \
-    && chmod -R 775 storage
 
 USER laravel
 

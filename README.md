@@ -24,7 +24,7 @@
 
 ### Через Docker Compose (рекомендуется)
 
-**Все зависимости уже установлены в Docker-образе!**
+**Всё просто — одна команда!**
 
 1. Скачайте проект:
    ```bash
@@ -39,24 +39,17 @@
 
 3. Откройте http://localhost:8082
 
-**Для Windows также можно использовать:**
-```bash
-start.bat
-```
+**Первый запуск:**
+- 🐳 Сборка Docker-образа (~1 мин)
+- 📦 Установка Composer зависимостей (~30 сек)
+- 📦 Установка npm зависимостей (~30 сек)
+- 🗄️ Миграции и сиды (~10 сек)
 
-**Что происходит при первом запуске:**
-1. 🐳 Сборка Docker-образа с предустановленными зависимостями
-2. 📦 Установка Composer и npm пакетов (внутри образа)
-3. 🔐 Генерация ключа приложения
-4. 🗄️ Миграции и заполнение данными
-5. 📦 Сборка frontend-ресурсов (Vite)
+**Последующие запуски:** несколько секунд (зависимости сохраняются в volumes)
 
 **Доступ:**
 - Приложение: http://localhost:8082
 - phpMyAdmin: http://localhost:8081 (логин: `laravel`, пароль: `secret`)
-
-**Первый запуск займёт ~2-3 минуты** (сборка образа и установка зависимостей).
-Последующие запуски — несколько секунд.
 
 ---
 
@@ -145,8 +138,8 @@ tests/Feature/
 
 1. **Клонирование репозитория**
    ```bash
-   git clone https://github.com/Konde2/laravel-catalog.git.git
-   cd REPOSITORY
+   git clone https://github.com/Konde2/laravel-catalog.git
+   cd laravel-catalog
    ```
 
 2. **Запуск контейнеров**
@@ -154,17 +147,15 @@ tests/Feature/
    docker compose up -d
    ```
 
-3. **Выполнение миграций и заполнение данными**
-   ```bash
-   docker compose exec app php artisan migrate:fresh --seed
-   ```
+   При первом запуске автоматически:
+   - Установятся Composer зависимости
+   - Установятся npm зависимости
+   - Выполнятся миграции
+   - Заполнится база данных
 
-### Доступ к приложению
-
-- **Основное приложение**: http://localhost:8082
-- **phpMyAdmin**: http://localhost:8081
-  - Логин: `laravel`
-  - Пароль: `secret`
+3. **Откройте приложение**
+   - Приложение: http://localhost:8082
+   - phpMyAdmin: http://localhost:8081
 
 ### Остановка контейнеров
 
@@ -196,6 +187,12 @@ docker compose restart mysql
 ```bash
 # Очистите и выполните миграции заново
 docker compose exec app php artisan migrate:fresh --seed
+```
+
+**Пересборка образа:**
+```bash
+docker compose build --no-cache
+docker compose up -d
 ```
 
 ## 📊 Структура базы данных
@@ -352,9 +349,14 @@ docker compose exec app composer dump-autoload
 # Проверка стиля кода
 docker compose exec app php artisan pint
 
-# Запуск в режиме разработки
-docker compose up -d
+# Просмотр логов
 docker compose logs -f app
+
+# Остановка контейнеров
+docker compose down
+
+# Остановка с удалением volumes
+docker compose down -v
 ```
 
 ## 📄 Лицензия
