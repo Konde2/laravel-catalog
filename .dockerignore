@@ -15,7 +15,8 @@
 *.swo
 *~
 
-# Dependencies
+# Dependencies (не включать в сборку, т.к. уже установлены в образе)
+# vendor/ и node_modules создаются внутри Docker образа
 vendor/
 node_modules/
 
@@ -35,10 +36,8 @@ yarn-error.log
 .phpunit.result.cache
 coverage/
 
-# Docker
+# Docker (не включать конфиги Docker в контекст сборки)
 docker-compose.override.yml
-Dockerfile
-docker-compose.yml
 .docker/
 
 # OS
