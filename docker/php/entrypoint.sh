@@ -4,26 +4,12 @@ set -e
 
 echo "🚀 Laravel Catalog Starting..."
 
-# Функция для ожидания MySQL
-wait_for_mysql() {
-    echo "⏳ Waiting for MySQL..."
-    while ! mysqladmin ping -h"$DB_HOST" -u"$DB_USERNAME" -p"$DB_PASSWORD" --silent 2>/dev/null; do
-        sleep 1
-    done
-    echo "✅ MySQL ready!"
-}
-
-# Функция для ожидания готовности PHP-FPM
-wait_for_php() {
-    echo "⏳ Waiting for PHP-FPM..."
-    while ! nc -z app 9000 2>/dev/null; do
-        sleep 1
-    done
-    echo "✅ PHP-FPM ready!"
-}
-
 # Ждём MySQL
-wait_for_mysql
+echo "⏳ Waiting for MySQL..."
+until mysql -h"$DB_HOST" -u"$DB_USERNAME" -p"$DB_PASSWORD" -e "SELECT 1" &>/dev/null; do
+    sleep 1
+done
+echo "✅ MySQL ready!"
 
 # Устанавливаем зависимости если нужно
 if [ ! -d "/var/www/html/vendor" ]; then
@@ -50,9 +36,9 @@ php artisan migrate --force
 
 # Сиды если база пустая
 echo "🌱 Seeding database..."
-php artisan db:seed --class=CatalogSeeder --force
+php artisan db:seed --class=CatalogSeeder --force || true
 
-echo "✅ Ready! Opening http://localhost:8082"
+echo "✅ Ready!"
 
 # Запускаем PHP-FPM
 exec php-fpm
