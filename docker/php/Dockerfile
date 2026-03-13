@@ -12,7 +12,8 @@ RUN apt-get update && apt-get install -y \
     unzip \
     nodejs \
     npm \
-    default-mysql-client
+    default-mysql-client \
+    netcat-openbsd
 
 # Очистка кэша
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -41,10 +42,7 @@ WORKDIR /var/www/html
 COPY --chown=laravel:laravel entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Установка netcat для проверки портов
-RUN apt-get update && apt-get install -y netcat-openbsd && rm -rf /var/lib/apt/lists/*
-
 EXPOSE 9000
 
-# Запускаем entrypoint который выполнит инициализацию и запустит php-fpm
+# Запускаем entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
