@@ -24,18 +24,36 @@
 
 ### Через Docker Compose (рекомендуется)
 
-**Одна команда для запуска:**
+**Для Windows:**
+
+1. Скачайте проект:
+   ```bash
+   git clone https://github.com/Konde2/laravel-catalog.git
+   cd laravel-catalog
+   ```
+
+2. Запустите `start.bat` (двойной клик или из консоли):
+   ```bash
+   start.bat
+   ```
+
+3. Откройте http://localhost:8082
+
+**Для Linux/Mac:**
 
 ```bash
 git clone https://github.com/Konde2/laravel-catalog.git && \
 cd laravel-catalog && \
-docker compose up -d
+docker compose up -d && \
+docker compose exec app composer install && \
+docker compose exec app php artisan key:generate && \
+docker compose exec app php artisan migrate:fresh --seed
 ```
 
 **Что происходит:**
 1. 📥 Клонирование репозитория
 2. 🐳 Запуск контейнеров (app, nginx, mysql, phpmyadmin)
-3. 📦 Автоматическая установка Composer зависимостей
+3. 📦 Установка Composer зависимостей
 4. 🔐 Генерация ключа приложения
 5. 🗄️ Миграции и заполнение данными
 
